@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Happiness & Freedom Assessment</title>
+  <style>
+    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 700px; margin: auto; background: #f9f9f9; }
+    h1, h2 { text-align: center; }
+    .question { margin-bottom: 1.2rem; }
+    label { display: block; margin: 0.5rem 0; }
+    select { width: 100%; padding: 0.5rem; }
+    button { padding: 0.8rem 1.5rem; font-size: 1rem; margin-top: 1.5rem; cursor: pointer; }
+    #result { margin-top: 2rem; font-weight: bold; text-align: center; font-size: 1.2rem; }
+  </style>
+</head>
+<body>
+  <h1>Happiness & Freedom Assessment</h1>
+  <p>Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree).</p>
+
+  <form id="quizForm">
+    <h2>Happiness Questions</h2>
+    <div id="happiness"></div>
+
+    <h2>Freedom Questions</h2>
+    <div id="freedom"></div>
+
+    <button type="submit">Calculate My Quadrant</button>
+  </form>
+
+  <div id="result"></div>
+
+  <script>
+    const happinessQuestions = [
+      "I feel generally satisfied with how my life is going.",
+      "I often feel a sense of purpose in my day-to-day activities.",
+      "I wake up looking forward to the day ahead.",
+      "I feel emotionally fulfilled in my relationships.",
+      "I rarely feel weighed down by anxiety or stress.",
+      "I experience joy or contentment regularly.",
+      "I’m proud of the person I’m becoming.",
+      "I feel at peace with the choices I’ve made.",
+      "I find beauty or meaning in small things.",
+      "I feel I’m on the right path in life."
+    ];
+
+    const freedomQuestions = [
+      "I feel free to make big changes in my life if I wanted to.",
+      "I have the resources or support I need to pursue new directions.",
+      "I rarely feel stuck in a situation I can’t change.",
+      "I’ve chosen this life, rather than just fallen into it.",
+      "I can express myself freely, without fear of judgement.",
+      "I have a strong sense of agency over my future.",
+      "I feel in control of my time and how I spend it.",
+      "I can walk away from situations that don’t serve me.",
+      "I’m not overly dependent on others’ expectations.",
+      "I feel I could reinvent myself if I chose to."
+    ];
+
+    const addQuestions = (containerId, questions, prefix) => {
+      const container = document.getElementById(containerId);
+      questions.forEach((q, i) => {
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.innerHTML = `
+          <label for="${prefix}${i}">${i + 1}. ${q}</label>
+          <select id="${prefix}${i}" required>
+            <option value="">Select...</option>
+            <option value="1">1 - Strongly Disagree</option>
+            <option value="2">2 - Disagree</option>
+            <option value="3">3 - Neutral</option>
+            <option value="4">4 - Agree</option>
+            <option value="5">5 - Strongly Agree</option>
+          </select>
+        `;
+        container.appendChild(div);
+      });
+    };
+
+    addQuestions('happiness', happinessQuestions, 'h');
+    addQuestions('freedom', freedomQuestions, 'f');
+
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let hScore = 0, fScore = 0;
+      for (let i = 0; i < 10; i++) {
+        hScore += parseInt(document.getElementById(`h${i}`).value);
+        fScore += parseInt(document.getElementById(`f${i}`).value);
+      }
+
+      let result = '';
+      if (hScore <= 30 && fScore <= 30) result = 'Quadrant: The Resigned';
+      else if (hScore <= 30 && fScore > 30) result = 'Quadrant: The Restless';
+      else if (hScore > 30 && fScore <= 30) result = 'Quadrant: The Settled';
+      else result = 'Quadrant: The Free and Fulfilled';
+
+      document.getElementById('result').innerText = `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\n${result}`;
+    });
+  </script>
+</body>
+</html>
