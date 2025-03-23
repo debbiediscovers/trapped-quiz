@@ -49,18 +49,10 @@
     }
     #result {
       margin-top: 2rem;
-      padding: 1rem;
-      background: #fff7dc;
-      border: 1px solid #ccc;
-      border-radius: 6px;
-      font-weight: normal;
-      text-align: left;
-      font-size: 1rem;
-      line-height: 1.6;
-      white-space: pre-wrap;
-      word-wrap: break-word;
-      overflow: visible;
-      max-width: 100%;
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.2rem;
+      white-space: pre-line;
     }
     #shareWhatsApp {
       display: none;
@@ -253,7 +245,7 @@
     function shareOnWhatsApp() {
       const label = quadrantLabels[latestQuadrant] || latestQuadrant;
       const message = encodeURIComponent(
-        `I just took Debbi's "Trapped or Free" quiz and here are my results.\n\nI am ${label}.\nHappiness score: ${latestH}\nFreedom score: ${latestF}\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
+        `I just took Debbi's "Trapped or Happy" quiz and here are my results.\n\nI am ${label}.\nHappiness score: ${latestH}\nFreedom score: ${latestF}\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
       );
       const url = `https://wa.me/?text=${message}`;
       window.open(url, '_blank');
