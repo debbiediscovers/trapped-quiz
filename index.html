@@ -56,6 +56,19 @@
       word-wrap: break-word;
       overflow-wrap: break-word;
     }
+    .result-scores {
+      font-weight: bold;
+      font-size: 1.3rem;
+      margin-bottom: 0.5rem;
+    }
+    .result-quadrant {
+      font-weight: bold;
+      font-size: 1.3rem;
+      margin-bottom: 1.5rem;
+    }
+    .result-description {
+      font-size: 1rem;
+    }
     #shareWhatsApp {
       display: none;
       text-align: center;
@@ -206,9 +219,15 @@
       latestH = hScore;
       latestF = fScore;
       latestQuadrant = quadrant;
-
-      const summary = `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\n\nQuadrant: ${quadrant}\n\n${feedbackText[quadrant]}`;
-      document.getElementById('result').innerText = summary;
+      
+      // Updated to use HTML elements instead of text for better styling
+      const resultDiv = document.getElementById('result');
+      resultDiv.innerHTML = `
+        <div class="result-scores">Your Scores — Happiness: ${hScore}, Freedom: ${fScore}</div>
+        <div class="result-quadrant">Quadrant: ${quadrant}</div>
+        <div class="result-description">${feedbackText[quadrant]}</div>
+      `;
+      
       document.getElementById('shareWhatsApp').style.display = 'block';
 
       const ctx = document.getElementById('quadrantChart').getContext('2d');
