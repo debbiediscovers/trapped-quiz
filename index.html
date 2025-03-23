@@ -9,7 +9,7 @@
     body {
       font-family: Arial, sans-serif;
       padding: 2rem;
-      max-width: 700px;
+      max-width: 800px;
       margin: auto;
       background: #f9f9f9;
     }
@@ -49,6 +49,9 @@
     #quadrantDescriptions {
       margin-top: 2rem;
     }
+    #quadrantDescriptions h3 {
+      margin-top: 1.5rem;
+    }
   </style>
 </head>
 <body>
@@ -69,26 +72,25 @@
 
   <canvas id="quadrantChart" width="400" height="400"></canvas>
 
-<div id="quadrantDescriptions" style="margin-top: 2rem;">
-  <h2>Quadrant Descriptions</h2>
+  <div id="quadrantDescriptions">
+    <h2>Quadrant Descriptions</h2>
 
-  <h3>1. Trapped + Unhappy (Top-left)</h3>
-  <p><strong>The Resigned</strong><br>
-  These are people who feel stuck in their current circumstances and are deeply dissatisfied. They may be in a job, relationship, or life situation they don’t enjoy, but see no way out. Often driven by fear, obligation, or a lack of resources, they stay where they are even though it brings them no joy. Burnout, apathy, or quiet desperation are common traits.</p>
+    <h3>1. Trapped + Unhappy (Top-left)</h3>
+    <p><strong>The Resigned</strong><br>
+    These are people who feel stuck in their current circumstances and are deeply dissatisfied. They may be in a job, relationship, or life situation they don’t enjoy, but see no way out. Often driven by fear, obligation, or a lack of resources, they stay where they are even though it brings them no joy. Burnout, apathy, or quiet desperation are common traits.</p>
 
-  <h3>2. Untrapped + Unhappy (Top-right)</h3>
-  <p><strong>The Restless</strong><br>
-  These individuals are free to make changes in their lives — and they know it — but still struggle to find happiness. They may jump from job to job, city to city, or relationship to relationship in search of fulfilment. Though they have autonomy, they often feel unanchored, unsure of what would truly satisfy them.</p>
+    <h3>2. Untrapped + Unhappy (Top-right)</h3>
+    <p><strong>The Restless</strong><br>
+    These individuals are free to make changes in their lives — and they know it — but still struggle to find happiness. They may jump from job to job, city to city, or relationship to relationship in search of fulfilment. Though they have autonomy, they often feel unanchored, unsure of what would truly satisfy them.</p>
 
-  <h3>3. Trapped + Happy (Bottom-left)</h3>
-  <p><strong>The Settled</strong><br>
-  People in this quadrant appear "trapped" by external standards — perhaps they’ve made long-term commitments or taken on responsibilities that limit their freedom — but they’ve made peace with it. They find contentment in routine, duty, or stability. While they may not have endless options, they have meaning, and that's enough.</p>
+    <h3>3. Trapped + Happy (Bottom-left)</h3>
+    <p><strong>The Settled</strong><br>
+    People in this quadrant appear "trapped" by external standards — perhaps they’ve made long-term commitments or taken on responsibilities that limit their freedom — but they’ve made peace with it. They find contentment in routine, duty, or stability. While they may not have endless options, they have meaning, and that's enough.</p>
 
-  <h3>4. Untrapped + Happy (Bottom-right)</h3>
-  <p><strong>The Free and Fulfilled</strong><br>
-  These are people who enjoy both emotional well-being and the freedom to choose their path. They live in alignment with their values, often making deliberate choices to keep their lives flexible and meaningful. This quadrant reflects a sense of agency, peace, and clarity.</p>
-</div>
-
+    <h3>4. Untrapped + Happy (Bottom-right)</h3>
+    <p><strong>The Free and Fulfilled</strong><br>
+    These are people who enjoy both emotional well-being and the freedom to choose their path. They live in alignment with their values, often making deliberate choices to keep their lives flexible and meaningful. This quadrant reflects a sense of agency, peace, and clarity.</p>
+  </div>
 
   <script>
     const happinessQuestions = [
