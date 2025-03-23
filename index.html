@@ -200,4 +200,59 @@
       let quadrant = '';
       if (hScore <= 30 && fScore <= 30) quadrant = 'The Resigned';
       else if (hScore <= 30 && fScore > 30) quadrant = 'The Restless';
-      else if (hScore >
+      else if (hScore > 30 && fScore <= 30) quadrant = 'The Settled';
+      else quadrant = 'The Free and Fulfilled';
+
+      const summary = `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\n\nQuadrant: ${quadrant}\n\n${feedbackText[quadrant]}`;
+      document.getElementById('result').innerText = summary;
+      document.getElementById('shareWhatsApp').style.display = 'block';
+
+      const ctx = document.getElementById('quadrantChart').getContext('2d');
+      if (window.myChart) window.myChart.destroy();
+
+      window.myChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'You',
+            data: [{ x: fScore, y: hScore }],
+            backgroundColor: 'red',
+            pointRadius: 8
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false }},
+          scales: {
+            x: {
+              min: 0,
+              max: 50,
+              title: { display: true, text: 'Freedom' },
+              ticks: { stepSize: 10 }
+            },
+            y: {
+              min: 0,
+              max: 50,
+              title: { display: true, text: 'Happiness' },
+              ticks: { stepSize: 10 }
+            }
+          }
+        }
+      });
+    });
+
+    function shareOnWhatsApp() {
+      const resultText = document.getElementById('result').innerText;
+      const quadrantLine = resultText.split('\n').find(line => line.startsWith("Quadrant:"));
+      const quadrantName = quadrantLine ? quadrantLine.replace("Quadrant: ", "").trim() : "a mystery quadrant";
+      const label = quadrantLabels[quadrantName] || quadrantName;
+
+      const message = encodeURIComponent(
+        `I just took Debbi's "Trapped or Happy" quiz and here are my results.\nI am ${label}.\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
+      );
+
+      const url = `https://wa.me/?text=${message}`;
+      window.open(url, '_blank');
+    }
+  </script>
+</body>
+</html>
