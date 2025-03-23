@@ -264,14 +264,15 @@
       });
     });
 
-    function shareOnWhatsApp() {
-      const label = quadrantLabels[latestQuadrant] || latestQuadrant;
-      const message = encodeURIComponent(
-        `I just took Debbi's "Trapped or Happy" quiz and here are my results.\n\nI am ${label}.\nHappiness score: ${latestH}\nFreedom score: ${latestF}\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
-      );
-      const url = `https://wa.me/?text=${message}`;
-      window.open(url, '_blank');
-    }
+   function shareOnWhatsApp() {
+  const label = quadrantLabels[latestQuadrant] || latestQuadrant;
+  const description = feedbackText[latestQuadrant];
+  const message = encodeURIComponent(
+    `I just took Debbi's "Trapped or Happy" quiz and here are my results.\n\nI am ${label}.\nHappiness score: ${latestH}\nFreedom score: ${latestF}\n\n${description}\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
+  );
+  const url = `https://wa.me/?text=${message}`;
+  window.open(url, '_blank');
+}
   </script>
 </body>
 </html>
