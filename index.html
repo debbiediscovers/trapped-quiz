@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Happiness & Freedom Assessment</title>
+  <title>Where You Stand</title>
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
     body {
@@ -13,8 +13,16 @@
       margin: auto;
       background: #f9f9f9;
     }
-    h1, h2 {
+    h1 {
       text-align: center;
+      font-size: 2.2rem;
+    }
+    .intro {
+      text-align: center;
+      font-style: italic;
+      margin-top: 1rem;
+      margin-bottom: 3rem;
+      line-height: 1.6;
     }
     .question {
       margin-bottom: 1.2rem;
@@ -55,23 +63,19 @@
   </style>
 </head>
 <body>
-  <h1>Happiness & Freedom Assessment</h1>
-
-  <p style="text-align: center; font-style: italic; margin-top: 1rem;">
-  Are you moving through life freely, or do you feel stuck in a place you didn't choose?<br>
-  Do you wake with a sense of joy, or has that feeling slipped away?<br><br>
-  This self-assessment invites you to explore where you stand—between feeling trapped or untrapped, happy or unhappy.<br>
-  There are no right answers, only a clearer picture of the path you're on.
-</p>
-
-  
-  <p>Rate each statement from 1 (Strongly Disagree) to 5 (Strongly Agree).</p>
+  <h1>Where You Stand</h1>
+  <p class="intro">
+    Are you moving through life freely, or do you feel stuck in a place you didn’t choose?<br>
+    Do you wake with a sense of joy, or has that feeling quietly slipped away?<br><br>
+    This self-assessment invites you to pause and reflect—on your happiness, your freedom, and the space between.
+    There are no right answers, only a clearer picture of the path you're on.
+  </p>
 
   <form id="quizForm">
     <h2>Happiness Questions</h2>
     <div id="happiness"></div>
 
-    <h2>Freedom Questions</h2>
+    <h2 style="margin-top: 3rem;">Freedom Questions</h2>
     <div id="freedom"></div>
 
     <button type="submit">Calculate My Quadrant</button>
