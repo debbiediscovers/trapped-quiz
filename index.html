@@ -4,14 +4,51 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>Happiness & Freedom Assessment</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <style>
-    body { font-family: Arial, sans-serif; padding: 2rem; max-width: 700px; margin: auto; background: #f9f9f9; }
-    h1, h2 { text-align: center; }
-    .question { margin-bottom: 1.2rem; }
-    label { display: block; margin: 0.5rem 0; }
-    select { width: 100%; padding: 0.5rem; }
-    button { padding: 0.8rem 1.5rem; font-size: 1rem; margin-top: 1.5rem; cursor: pointer; }
-    #result { margin-top: 2rem; font-weight: bold; text-align: center; font-size: 1.2rem; }
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      max-width: 700px;
+      margin: auto;
+      background: #f9f9f9;
+    }
+    h1, h2 {
+      text-align: center;
+    }
+    .question {
+      margin-bottom: 1.2rem;
+    }
+    label {
+      display: block;
+      margin: 0.5rem 0;
+    }
+    select {
+      width: 100%;
+      padding: 0.5rem;
+    }
+    button {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 2rem;
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.2rem;
+    }
+    canvas {
+      margin: 2rem auto;
+      display: block;
+    }
+    #quadrantDescriptions {
+      margin-top: 2rem;
+    }
   </style>
 </head>
 <body>
@@ -29,6 +66,18 @@
   </form>
 
   <div id="result"></div>
+
+  <canvas id="quadrantChart" width="400" height="400"></canvas>
+
+  <div id="quadrantDescriptions">
+    <h2>Quadrant Descriptions</h2>
+    <ul>
+      <li><strong>The Resigned</strong> (Trapped + Unhappy): Feeling stuck and dissatisfied with life, but unsure how to change it.</li>
+      <li><strong>The Restless</strong> (Untrapped + Unhappy): Free to choose, but still searching for fulfilment.</li>
+      <li><strong>The Settled</strong> (Trapped + Happy): Committed or rooted, but at peace with those choices.</li>
+      <li><strong>The Free and Fulfilled</strong> (Untrapped + Happy): Living with autonomy and joy, aligned with personal values.</li>
+    </ul>
+  </div>
 
   <script>
     const happinessQuestions = [
@@ -89,12 +138,44 @@
       }
 
       let result = '';
-      if (hScore <= 30 && fScore <= 30) result = 'Quadrant: The Resigned';
-      else if (hScore <= 30 && fScore > 30) result = 'Quadrant: The Restless';
-      else if (hScore > 30 && fScore <= 30) result = 'Quadrant: The Settled';
-      else result = 'Quadrant: The Free and Fulfilled';
+      if (hScore <= 30 && fScore <= 30) result = 'The Resigned';
+      else if (hScore <= 30 && fScore > 30) result = 'The Restless';
+      else if (hScore > 30 && fScore <= 30) result = 'The Settled';
+      else result = 'The Free and Fulfilled';
 
-      document.getElementById('result').innerText = `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\n${result}`;
+      document.getElementById('result').innerText = `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\nQuadrant: ${result}`;
+
+      const ctx = document.getElementById('quadrantChart').getContext('2d');
+      if (window.myChart) window.myChart.destroy();
+
+      window.myChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'You',
+            data: [{ x: fScore, y: hScore }],
+            backgroundColor: 'red',
+            pointRadius: 8
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false }},
+          scales: {
+            x: {
+              min: 0,
+              max: 50,
+              title: { display: true, text: 'Freedom' },
+              ticks: { stepSize: 10 }
+            },
+            y: {
+              min: 0,
+              max: 50,
+              title: { display: true, text: 'Happiness' },
+              ticks: { stepSize: 10 }
+            }
+          }
+        }
+      });
     });
   </script>
 </body>
