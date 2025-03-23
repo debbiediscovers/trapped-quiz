@@ -222,14 +222,30 @@
       });
     });
 
-   function shareOnWhatsApp() {
-  const text = document.getElementById('result').innerText;
+function shareOnWhatsApp() {
+  const resultText = document.getElementById('result').innerText;
+
+  // Extract the quadrant from the result text
+  const quadrantLine = resultText.split('\n').find(line => line.startsWith("Quadrant:"));
+  const quadrantName = quadrantLine ? quadrantLine.replace("Quadrant: ", "").trim() : "a mystery quadrant";
+
+  const quadrantLabels = {
+    "The Resigned": "The Resigned (Trapped and Unhappy)",
+    "The Restless": "The Restless (Untrapped and Unhappy)",
+    "The Settled": "The Settled (Trapped and Happy)",
+    "The Free and Fulfilled": "The Free and Fulfilled (Untrapped and Happy)"
+  };
+
+  const shareLabel = quadrantLabels[quadrantName] || quadrantName;
+
   const message = encodeURIComponent(
-    `I took Debbi’s “Are You Trapped or Free” quiz — here are my results:\n\n${text}\n\nTry the quiz yourself: https://debbiediscovers.github.io/trapped-quiz/`
+    `I just took Debbi's "Trapped or Happy" quiz and here are my results.\nI am ${shareLabel}.\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
   );
+
   const url = `https://wa.me/?text=${message}`;
   window.open(url, '_blank');
 }
+
 
   </script>
 </body>
