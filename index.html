@@ -31,9 +31,11 @@
       display: block;
       margin: 0.5rem 0;
     }
-    select {
-      width: 100%;
-      padding: 0.5rem;
+    .options {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+      margin-bottom: 1rem;
     }
     button {
       padding: 0.8rem 1.5rem;
@@ -99,19 +101,19 @@
 
     <h3>1. The Resigned</h3>
     <p><strong>Trapped and Unhappy</strong><br>
-    You may feel stuck in your current circumstances and deeply dissatisfied. You might be in a job, relationship, or life situation that doesn’t fulfil you, and yet it seems difficult or impossible to leave. Fear, obligation, or a lack of resources may be holding you in place. This quadrant often carries a sense of burnout, apathy, or quiet resignation.</p>
+    You may feel stuck in your current circumstances and deeply dissatisfied...</p>
 
     <h3>2. The Restless</h3>
     <p><strong>Untrapped and Unhappy</strong><br>
-    You are free to make changes in your life — and you know it — but you still struggle to find contentment. You may move from job to job, place to place, or person to person, hoping for something more. Though you have options, you may feel unanchored or uncertain of what will truly bring you joy.</p>
+    You are free to make changes in your life — and you know it — but you still struggle to find contentment...</p>
 
     <h3>3. The Settled</h3>
     <p><strong>Trapped and Happy</strong><br>
-    You may have made commitments or taken on responsibilities that limit your freedom, but you’ve found peace in them. You’ve chosen stability, duty, or routine — and they give your life meaning. You might not have boundless freedom, but you’ve created a fulfilling life within the structure you’ve chosen.</p>
+    You may have made commitments or taken on responsibilities that limit your freedom, but you’ve found peace in them...</p>
 
     <h3>4. The Free and Fulfilled</h3>
     <p><strong>Untrapped and Happy</strong><br>
-    You enjoy both emotional well-being and the freedom to choose your path. You live in alignment with your values, often making deliberate decisions to keep your life flexible and meaningful. You have clarity, peace, and the sense that you're exactly where you're meant to be.</p>
+    You enjoy both emotional well-being and the freedom to choose your path...</p>
   </div>
 
   <script>
@@ -142,10 +144,17 @@
     ];
 
     const feedbackText = {
-      "The Resigned": "You may feel stuck in your current circumstances and deeply dissatisfied. You might be in a job, relationship, or life situation that doesn’t fulfil you, and yet it seems difficult or impossible to leave. Fear, obligation, or a lack of resources may be holding you in place. This quadrant often carries a sense of burnout, apathy, or quiet resignation.",
-      "The Restless": "You are free to make changes in your life — and you know it — but you still struggle to find contentment. You may move from job to job, place to place, or person to person, hoping for something more. Though you have options, you may feel unanchored or uncertain of what will truly bring you joy.",
-      "The Settled": "You may have made commitments or taken on responsibilities that limit your freedom, but you’ve found peace in them. You’ve chosen stability, duty, or routine — and they give your life meaning. You might not have boundless freedom, but you’ve created a fulfilling life within the structure you’ve chosen.",
-      "The Free and Fulfilled": "You enjoy both emotional well-being and the freedom to choose your path. You live in alignment with your values, often making deliberate decisions to keep your life flexible and meaningful. You have clarity, peace, and the sense that you're exactly where you're meant to be."
+      "The Resigned": "You may feel stuck in your current circumstances and deeply dissatisfied...",
+      "The Restless": "You are free to make changes in your life — and you know it — but you still struggle to find contentment...",
+      "The Settled": "You may have made commitments or taken on responsibilities that limit your freedom, but you’ve found peace in them...",
+      "The Free and Fulfilled": "You enjoy both emotional well-being and the freedom to choose your path..."
+    };
+
+    const quadrantLabels = {
+      "The Resigned": "The Resigned (Trapped and Unhappy)",
+      "The Restless": "The Restless (Untrapped and Unhappy)",
+      "The Settled": "The Settled (Trapped and Happy)",
+      "The Free and Fulfilled": "The Free and Fulfilled (Untrapped and Happy)"
     };
 
     const addQuestions = (containerId, questions, prefix) => {
@@ -154,15 +163,14 @@
         const div = document.createElement('div');
         div.className = 'question';
         div.innerHTML = `
-          <label for="${prefix}${i}">${i + 1}. ${q}</label>
-          <select id="${prefix}${i}" required>
-            <option value="">Select...</option>
-            <option value="1">1 - Strongly Disagree</option>
-            <option value="2">2 - Disagree</option>
-            <option value="3">3 - Neutral</option>
-            <option value="4">4 - Agree</option>
-            <option value="5">5 - Strongly Agree</option>
-          </select>
+          <label>${i + 1}. ${q}</label>
+          <div class="options">
+            ${[1, 2, 3, 4, 5].map(val => `
+              <label>
+                <input type="radio" name="${prefix}${i}" value="${val}" required> ${val}
+              </label>
+            `).join('')}
+          </div>
         `;
         container.appendChild(div);
       });
@@ -174,9 +182,10 @@
     document.getElementById('quizForm').addEventListener('submit', function(e) {
       e.preventDefault();
       let hScore = 0, fScore = 0;
+
       for (let i = 0; i < 10; i++) {
-        hScore += parseInt(document.getElementById(`h${i}`).value);
-        fScore += parseInt(document.getElementById(`f${i}`).value);
+        hScore += parseInt(document.querySelector(`input[name="h${i}"]:checked`).value);
+        fScore += parseInt(document.querySelector(`input[name="f${i}"]:checked`).value);
       }
 
       let quadrant = '';
@@ -222,31 +231,19 @@
       });
     });
 
-function shareOnWhatsApp() {
-  const resultText = document.getElementById('result').innerText;
+    function shareOnWhatsApp() {
+      const resultText = document.getElementById('result').innerText;
+      const quadrantLine = resultText.split('\n').find(line => line.startsWith("Quadrant:"));
+      const quadrantName = quadrantLine ? quadrantLine.replace("Quadrant: ", "").trim() : "a mystery quadrant";
+      const label = quadrantLabels[quadrantName] || quadrantName;
 
-  // Extract the quadrant from the result text
-  const quadrantLine = resultText.split('\n').find(line => line.startsWith("Quadrant:"));
-  const quadrantName = quadrantLine ? quadrantLine.replace("Quadrant: ", "").trim() : "a mystery quadrant";
+      const message = encodeURIComponent(
+        `I just took Debbi's "Trapped or Happy" quiz and here are my results.\nI am ${label}.\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
+      );
 
-  const quadrantLabels = {
-    "The Resigned": "The Resigned (Trapped and Unhappy)",
-    "The Restless": "The Restless (Untrapped and Unhappy)",
-    "The Settled": "The Settled (Trapped and Happy)",
-    "The Free and Fulfilled": "The Free and Fulfilled (Untrapped and Happy)"
-  };
-
-  const shareLabel = quadrantLabels[quadrantName] || quadrantName;
-
-  const message = encodeURIComponent(
-    `I just took Debbi's "Trapped or Happy" quiz and here are my results.\nI am ${shareLabel}.\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
-  );
-
-  const url = `https://wa.me/?text=${message}`;
-  window.open(url, '_blank');
-}
-
-
+      const url = `https://wa.me/?text=${message}`;
+      window.open(url, '_blank');
+    }
   </script>
 </body>
 </html>
