@@ -1,137 +1,255 @@
-<!-- Everything stays the same above... -->
-<script>
-  const happinessQuestions = [
-    "I feel generally satisfied with how my life is going.",
-    "I often feel a sense of purpose in my day-to-day activities.",
-    "I wake up looking forward to the day ahead.",
-    "I feel emotionally fulfilled in my relationships.",
-    "I rarely feel weighed down by anxiety or stress.",
-    "I experience joy or contentment regularly.",
-    "I’m proud of the person I’m becoming.",
-    "I feel at peace with the choices I’ve made.",
-    "I find beauty or meaning in small things.",
-    "I feel I’m on the right path in life."
-  ];
-
-  const freedomQuestions = [
-    "I feel free to make big changes in my life if I wanted to.",
-    "I have the resources or support I need to pursue new directions.",
-    "I rarely feel stuck in a situation I can’t change.",
-    "I’ve chosen this life, rather than just fallen into it.",
-    "I can express myself freely, without fear of judgement.",
-    "I have a strong sense of agency over my future.",
-    "I feel in control of my time and how I spend it.",
-    "I can walk away from situations that don’t serve me.",
-    "I’m not overly dependent on others’ expectations.",
-    "I feel I could reinvent myself if I chose to."
-  ];
-
-  const feedbackText = {
-    "The Resigned": "You may feel stuck in your current circumstances and deeply dissatisfied...",
-    "The Restless": "You are free to make changes in your life — and you know it — but you still struggle to find contentment...",
-    "The Settled": "You may have made commitments or taken on responsibilities that limit your freedom, but you’ve found peace in them...",
-    "The Free and Fulfilled": "You enjoy both emotional well-being and the freedom to choose your path..."
-  };
-
-  const quadrantLabels = {
-    "The Resigned": "The Resigned (Trapped and Unhappy)",
-    "The Restless": "The Restless (Untrapped and Unhappy)",
-    "The Settled": "The Settled (Trapped and Happy)",
-    "The Free and Fulfilled": "The Free and Fulfilled (Untrapped and Happy)"
-  };
-
-  const addQuestions = (containerId, questions, prefix) => {
-    const container = document.getElementById(containerId);
-    questions.forEach((q, i) => {
-      const div = document.createElement('div');
-      div.className = 'question';
-      div.innerHTML = `
-        <label>${i + 1}. ${q}</label>
-        <div class="options">
-          ${[1, 2, 3, 4, 5].map(val => `
-            <label>
-              <input type="radio" name="${prefix}${i}" value="${val}" required> ${val}
-            </label>
-          `).join('')}
-        </div>
-      `;
-      container.appendChild(div);
-    });
-  };
-
-  addQuestions('happiness', happinessQuestions, 'h');
-  addQuestions('freedom', freedomQuestions, 'f');
-
-  let latestH = 0;
-  let latestF = 0;
-  let latestQuadrant = "";
-
-  document.getElementById('quizForm').addEventListener('submit', function(e) {
-    e.preventDefault();
-    let hScore = 0, fScore = 0;
-
-    for (let i = 0; i < 10; i++) {
-      hScore += parseInt(document.querySelector(`input[name="h${i}"]:checked`).value);
-      fScore += parseInt(document.querySelector(`input[name="f${i}"]:checked`).value);
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Debbi's "Are You Trapped or Free" Quiz</title>
+  <link rel="icon" href="https://deborahkay.com/favicon.ico" type="image/x-icon" />
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      padding: 2rem;
+      max-width: 800px;
+      margin: auto;
+      background: #f9f9f9;
     }
+    h1 {
+      text-align: center;
+      font-size: 2.2rem;
+    }
+    .intro {
+      text-align: center;
+      font-style: italic;
+      margin-top: 1rem;
+      margin-bottom: 3rem;
+      line-height: 1.6;
+    }
+    .question {
+      margin-bottom: 1.5rem;
+    }
+    .options {
+      display: flex;
+      gap: 1rem;
+      margin-top: 0.5rem;
+    }
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
+    }
+    button {
+      padding: 0.8rem 1.5rem;
+      font-size: 1rem;
+      margin-top: 1.5rem;
+      display: block;
+      margin-left: auto;
+      margin-right: auto;
+      cursor: pointer;
+    }
+    #result {
+      margin-top: 2rem;
+      font-weight: bold;
+      text-align: center;
+      font-size: 1.2rem;
+      white-space: pre-line;
+    }
+    #shareWhatsApp {
+      display: none;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
+    canvas {
+      margin: 2rem auto;
+      display: block;
+    }
+    #quadrantDescriptions {
+      margin-top: 3rem;
+    }
+    #quadrantDescriptions h3 {
+      margin-top: 1.5rem;
+    }
+  </style>
+</head>
+<body>
+  <h1>Debbi's "Are You Trapped or Free" Quiz</h1>
+  <p class="intro">
+    Are you moving through life freely, or do you feel stuck in a place you didn’t choose?<br>
+    Do you wake with a sense of joy, or has that feeling quietly slipped away?<br><br>
+    This self-assessment invites you to pause and reflect—on your happiness, your freedom, and the space between. There are no right answers, only a clearer picture of the path you're on.
+  </p>
 
-    let quadrant = '';
-    if (hScore <= 30 && fScore <= 30) quadrant = 'The Resigned';
-    else if (hScore <= 30 && fScore > 30) quadrant = 'The Restless';
-    else if (hScore > 30 && fScore <= 30) quadrant = 'The Settled';
-    else quadrant = 'The Free and Fulfilled';
+  <form id="quizForm">
+    <h2>Happiness Questions</h2>
+    <p style="font-style: italic; margin-top: -1rem; margin-bottom: 1rem;">(1 – Strongly Disagree, 5 – Strongly Agree)</p>
+    <div id="happiness"></div>
 
-    latestH = hScore;
-    latestF = fScore;
-    latestQuadrant = quadrant;
+    <h2 style="margin-top: 3rem;">Freedom Questions</h2>
+    <p style="font-style: italic; margin-top: -1rem; margin-bottom: 1rem;">(1 – Strongly Disagree, 5 – Strongly Agree)</p>
+    <div id="freedom"></div>
 
-    const summary = `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\n\nQuadrant: ${quadrant}\n\n${feedbackText[quadrant]}`;
-    document.getElementById('result').innerText = summary;
-    document.getElementById('shareWhatsApp').style.display = 'block';
+    <button type="submit">Calculate My Quadrant</button>
+  </form>
 
-    const ctx = document.getElementById('quadrantChart').getContext('2d');
-    if (window.myChart) window.myChart.destroy();
+  <div id="result"></div>
 
-    window.myChart = new Chart(ctx, {
-      type: 'scatter',
-      data: {
-        datasets: [{
-          label: 'You',
-          data: [{ x: fScore, y: hScore }],
-          backgroundColor: 'red',
-          pointRadius: 8
-        }]
-      },
-      options: {
-        plugins: { legend: { display: false }},
-        scales: {
-          x: {
-            min: 0,
-            max: 50,
-            title: { display: true, text: 'Freedom' },
-            ticks: { stepSize: 10 }
-          },
-          y: {
-            min: 0,
-            max: 50,
-            title: { display: true, text: 'Happiness' },
-            ticks: { stepSize: 10 }
+  <div id="shareWhatsApp">
+    <button onclick="shareOnWhatsApp()">Share on WhatsApp</button>
+  </div>
+
+  <canvas id="quadrantChart" width="400" height="400"></canvas>
+
+  <div id="quadrantDescriptions">
+    <h2>Quadrant Descriptions</h2>
+
+    <h3>1. The Resigned</h3>
+    <p><strong>Trapped and Unhappy</strong><br>
+    You may feel stuck in your current circumstances and deeply dissatisfied. You might be in a job, relationship, or life situation that doesn’t fulfil you, and yet it seems difficult or impossible to leave. Fear, obligation, or a lack of resources may be holding you in place. This quadrant often carries a sense of burnout, apathy, or quiet resignation.</p>
+
+    <h3>2. The Restless</h3>
+    <p><strong>Untrapped and Unhappy</strong><br>
+    You are free to make changes in your life — and you know it — but you still struggle to find contentment. You may move from job to job, place to place, or person to person, hoping for something more. Though you have options, you may feel unanchored or uncertain of what will truly bring you joy.</p>
+
+    <h3>3. The Settled</h3>
+    <p><strong>Trapped and Happy</strong><br>
+    You may have made commitments or taken on responsibilities that limit your freedom, but you’ve found peace in them. You’ve chosen stability, duty, or routine — and they give your life meaning. You might not have boundless freedom, but you’ve created a fulfilling life within the structure you’ve chosen.</p>
+
+    <h3>4. The Free and Fulfilled</h3>
+    <p><strong>Untrapped and Happy</strong><br>
+    You enjoy both emotional well-being and the freedom to choose your path. You live in alignment with your values, often making deliberate decisions to keep your life flexible and meaningful. You have clarity, peace, and the sense that you're exactly where you're meant to be.</p>
+  </div>
+
+  <script>
+    const happinessQuestions = [
+      "I feel generally satisfied with how my life is going.",
+      "I often feel a sense of purpose in my day-to-day activities.",
+      "I wake up looking forward to the day ahead.",
+      "I feel emotionally fulfilled in my relationships.",
+      "I rarely feel weighed down by anxiety or stress.",
+      "I experience joy or contentment regularly.",
+      "I’m proud of the person I’m becoming.",
+      "I feel at peace with the choices I’ve made.",
+      "I find beauty or meaning in small things.",
+      "I feel I’m on the right path in life."
+    ];
+
+    const freedomQuestions = [
+      "I feel free to make big changes in my life if I wanted to.",
+      "I have the resources or support I need to pursue new directions.",
+      "I rarely feel stuck in a situation I can’t change.",
+      "I’ve chosen this life, rather than just fallen into it.",
+      "I can express myself freely, without fear of judgement.",
+      "I have a strong sense of agency over my future.",
+      "I feel in control of my time and how I spend it.",
+      "I can walk away from situations that don’t serve me.",
+      "I’m not overly dependent on others’ expectations.",
+      "I feel I could reinvent myself if I chose to."
+    ];
+
+    const feedbackText = {
+      "The Resigned": "You may feel stuck in your current circumstances and deeply dissatisfied...",
+      "The Restless": "You are free to make changes in your life — and you know it — but you still struggle to find contentment...",
+      "The Settled": "You may have made commitments or taken on responsibilities that limit your freedom, but you’ve found peace in them...",
+      "The Free and Fulfilled": "You enjoy both emotional well-being and the freedom to choose your path..."
+    };
+
+    const quadrantLabels = {
+      "The Resigned": "The Resigned (Trapped and Unhappy)",
+      "The Restless": "The Restless (Untrapped and Unhappy)",
+      "The Settled": "The Settled (Trapped and Happy)",
+      "The Free and Fulfilled": "The Free and Fulfilled (Untrapped and Happy)"
+    };
+
+    const addQuestions = (containerId, questions, prefix) => {
+      const container = document.getElementById(containerId);
+      questions.forEach((q, i) => {
+        const div = document.createElement('div');
+        div.className = 'question';
+        div.innerHTML = `
+          <label>${i + 1}. ${q}</label>
+          <div class="options">
+            ${[1, 2, 3, 4, 5].map(val => `
+              <label>
+                <input type="radio" name="${prefix}${i}" value="${val}" required> ${val}
+              </label>
+            `).join('')}
+          </div>
+        `;
+        container.appendChild(div);
+      });
+    };
+
+    addQuestions('happiness', happinessQuestions, 'h');
+    addQuestions('freedom', freedomQuestions, 'f');
+
+    let latestH = 0;
+    let latestF = 0;
+    let latestQuadrant = "";
+
+    document.getElementById('quizForm').addEventListener('submit', function(e) {
+      e.preventDefault();
+      let hScore = 0, fScore = 0;
+
+      for (let i = 0; i < 10; i++) {
+        hScore += parseInt(document.querySelector(`input[name="h${i}"]:checked`).value);
+        fScore += parseInt(document.querySelector(`input[name="f${i}"]:checked`).value);
+      }
+
+      let quadrant = '';
+      if (hScore <= 30 && fScore <= 30) quadrant = 'The Resigned';
+      else if (hScore <= 30 && fScore > 30) quadrant = 'The Restless';
+      else if (hScore > 30 && fScore <= 30) quadrant = 'The Settled';
+      else quadrant = 'The Free and Fulfilled';
+
+      latestH = hScore;
+      latestF = fScore;
+      latestQuadrant = quadrant;
+
+      const summary = `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\n\nQuadrant: ${quadrant}\n\n${feedbackText[quadrant]}`;
+      document.getElementById('result').innerText = summary;
+      document.getElementById('shareWhatsApp').style.display = 'block';
+
+      const ctx = document.getElementById('quadrantChart').getContext('2d');
+      if (window.myChart) window.myChart.destroy();
+
+      window.myChart = new Chart(ctx, {
+        type: 'scatter',
+        data: {
+          datasets: [{
+            label: 'You',
+            data: [{ x: fScore, y: hScore }],
+            backgroundColor: 'red',
+            pointRadius: 8
+          }]
+        },
+        options: {
+          plugins: { legend: { display: false }},
+          scales: {
+            x: {
+              min: 0,
+              max: 50,
+              title: { display: true, text: 'Freedom' },
+              ticks: { stepSize: 10 }
+            },
+            y: {
+              min: 0,
+              max: 50,
+              title: { display: true, text: 'Happiness' },
+              ticks: { stepSize: 10 }
+            }
           }
         }
-      }
+      });
     });
-  });
 
-  function shareOnWhatsApp() {
-    const label = quadrantLabels[latestQuadrant] || latestQuadrant;
-
-    const message = encodeURIComponent(
-      `I just took Debbi's "Trapped or Happy" quiz and here are my results.\n\nI am ${label}.\nHappiness score: ${latestH}\nFreedom score: ${latestF}\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
-    );
-
-    const url = `https://wa.me/?text=${message}`;
-    window.open(url, '_blank');
-  }
-</script>
+    function shareOnWhatsApp() {
+      const label = quadrantLabels[latestQuadrant] || latestQuadrant;
+      const message = encodeURIComponent(
+        `I just took Debbi's "Trapped or Happy" quiz and here are my results.\n\nI am ${label}.\nHappiness score: ${latestH}\nFreedom score: ${latestF}\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
+      );
+      const url = `https://wa.me/?text=${message}`;
+      window.open(url, '_blank');
+    }
+  </script>
 </body>
 </html>
