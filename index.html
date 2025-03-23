@@ -222,14 +222,15 @@
       });
     });
 
-    function shareOnWhatsApp() {
-      const text = document.getElementById('result').innerText;
-      const message = encodeURIComponent(
-        text + "\n\nTake the quiz yourself at https://debbiediscovers.github.io/trapped-quiz/"
-      );
-      const url = `https://wa.me/?text=${message}`;
-      window.open(url, '_blank');
-    }
+   function shareOnWhatsApp() {
+  const text = document.getElementById('result').innerText;
+  const message = encodeURIComponent(
+    `I took Debbi’s “Are You Trapped or Free” quiz — here are my results:\n\n${text}\n\nTry the quiz yourself: https://debbiediscovers.github.io/trapped-quiz/`
+  );
+  const url = `https://wa.me/?text=${message}`;
+  window.open(url, '_blank');
+}
+
   </script>
 </body>
 </html>
