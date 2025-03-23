@@ -51,6 +51,11 @@
       font-size: 1.2rem;
       white-space: pre-line;
     }
+    #shareWhatsApp {
+      display: none;
+      text-align: center;
+      margin-top: 1.5rem;
+    }
     canvas {
       margin: 2rem auto;
       display: block;
@@ -82,6 +87,10 @@
   </form>
 
   <div id="result"></div>
+
+  <div id="shareWhatsApp">
+    <button onclick="shareOnWhatsApp()">Share on WhatsApp</button>
+  </div>
 
   <canvas id="quadrantChart" width="400" height="400"></canvas>
 
@@ -176,8 +185,9 @@
       else if (hScore > 30 && fScore <= 30) quadrant = 'The Settled';
       else quadrant = 'The Free and Fulfilled';
 
-      document.getElementById('result').innerText = 
-        `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\n\nQuadrant: ${quadrant}\n\n${feedbackText[quadrant]}`;
+      const summary = `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\n\nQuadrant: ${quadrant}\n\n${feedbackText[quadrant]}`;
+      document.getElementById('result').innerText = summary;
+      document.getElementById('shareWhatsApp').style.display = 'block';
 
       const ctx = document.getElementById('quadrantChart').getContext('2d');
       if (window.myChart) window.myChart.destroy();
@@ -211,6 +221,15 @@
         }
       });
     });
+
+    function shareOnWhatsApp() {
+      const text = document.getElementById('result').innerText;
+      const message = encodeURIComponent(
+        text + "\n\nTake the quiz yourself at https://debbiediscovers.github.io/trapped-quiz/"
+      );
+      const url = `https://wa.me/?text=${message}`;
+      window.open(url, '_blank');
+    }
   </script>
 </body>
 </html>
