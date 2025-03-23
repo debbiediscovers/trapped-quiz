@@ -25,7 +25,7 @@
       line-height: 1.6;
     }
     .question {
-      margin-bottom: 1.2rem;
+      margin-bottom: 1.5rem;
     }
     label {
       display: block;
@@ -33,9 +33,14 @@
     }
     .options {
       display: flex;
+      flex-wrap: wrap;
       gap: 1rem;
       margin-top: 0.5rem;
-      margin-bottom: 1rem;
+    }
+    .options label {
+      display: flex;
+      align-items: center;
+      gap: 0.3rem;
     }
     button {
       padding: 0.8rem 1.5rem;
@@ -100,20 +105,16 @@
     <h2>Quadrant Descriptions</h2>
 
     <h3>1. The Resigned</h3>
-    <p><strong>Trapped and Unhappy</strong><br>
-    You may feel stuck in your current circumstances and deeply dissatisfied...</p>
+    <p><strong>Trapped and Unhappy</strong><br>You may feel stuck in your current circumstances and deeply dissatisfied...</p>
 
     <h3>2. The Restless</h3>
-    <p><strong>Untrapped and Unhappy</strong><br>
-    You are free to make changes in your life — and you know it — but you still struggle to find contentment...</p>
+    <p><strong>Untrapped and Unhappy</strong><br>You are free to make changes in your life — and you know it — but you still struggle to find contentment...</p>
 
     <h3>3. The Settled</h3>
-    <p><strong>Trapped and Happy</strong><br>
-    You may have made commitments or taken on responsibilities that limit your freedom, but you’ve found peace in them...</p>
+    <p><strong>Trapped and Happy</strong><br>You may have made commitments or taken on responsibilities that limit your freedom, but you’ve found peace in them...</p>
 
     <h3>4. The Free and Fulfilled</h3>
-    <p><strong>Untrapped and Happy</strong><br>
-    You enjoy both emotional well-being and the freedom to choose your path...</p>
+    <p><strong>Untrapped and Happy</strong><br>You enjoy both emotional well-being and the freedom to choose your path...</p>
   </div>
 
   <script>
@@ -143,6 +144,14 @@
       "I feel I could reinvent myself if I chose to."
     ];
 
+    const ratingLabels = {
+      1: "Strongly Disagree",
+      2: "Disagree",
+      3: "Neutral",
+      4: "Agree",
+      5: "Strongly Agree"
+    };
+
     const feedbackText = {
       "The Resigned": "You may feel stuck in your current circumstances and deeply dissatisfied...",
       "The Restless": "You are free to make changes in your life — and you know it — but you still struggle to find contentment...",
@@ -167,7 +176,7 @@
           <div class="options">
             ${[1, 2, 3, 4, 5].map(val => `
               <label>
-                <input type="radio" name="${prefix}${i}" value="${val}" required> ${val}
+                <input type="radio" name="${prefix}${i}" value="${val}" required> ${val} - ${ratingLabels[val]}
               </label>
             `).join('')}
           </div>
@@ -191,59 +200,4 @@
       let quadrant = '';
       if (hScore <= 30 && fScore <= 30) quadrant = 'The Resigned';
       else if (hScore <= 30 && fScore > 30) quadrant = 'The Restless';
-      else if (hScore > 30 && fScore <= 30) quadrant = 'The Settled';
-      else quadrant = 'The Free and Fulfilled';
-
-      const summary = `Your Scores — Happiness: ${hScore}, Freedom: ${fScore}\n\nQuadrant: ${quadrant}\n\n${feedbackText[quadrant]}`;
-      document.getElementById('result').innerText = summary;
-      document.getElementById('shareWhatsApp').style.display = 'block';
-
-      const ctx = document.getElementById('quadrantChart').getContext('2d');
-      if (window.myChart) window.myChart.destroy();
-
-      window.myChart = new Chart(ctx, {
-        type: 'scatter',
-        data: {
-          datasets: [{
-            label: 'You',
-            data: [{ x: fScore, y: hScore }],
-            backgroundColor: 'red',
-            pointRadius: 8
-          }]
-        },
-        options: {
-          plugins: { legend: { display: false }},
-          scales: {
-            x: {
-              min: 0,
-              max: 50,
-              title: { display: true, text: 'Freedom' },
-              ticks: { stepSize: 10 }
-            },
-            y: {
-              min: 0,
-              max: 50,
-              title: { display: true, text: 'Happiness' },
-              ticks: { stepSize: 10 }
-            }
-          }
-        }
-      });
-    });
-
-    function shareOnWhatsApp() {
-      const resultText = document.getElementById('result').innerText;
-      const quadrantLine = resultText.split('\n').find(line => line.startsWith("Quadrant:"));
-      const quadrantName = quadrantLine ? quadrantLine.replace("Quadrant: ", "").trim() : "a mystery quadrant";
-      const label = quadrantLabels[quadrantName] || quadrantName;
-
-      const message = encodeURIComponent(
-        `I just took Debbi's "Trapped or Happy" quiz and here are my results.\nI am ${label}.\n\nTry the quiz yourself here: https://debbiediscovers.github.io/trapped-quiz/`
-      );
-
-      const url = `https://wa.me/?text=${message}`;
-      window.open(url, '_blank');
-    }
-  </script>
-</body>
-</html>
+      else if (hScore >
